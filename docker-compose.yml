@@ -20,9 +20,6 @@ services:
       - "3000:3000"
     depends_on:
       - good_job_repro_db
-    environment:
-      DATABASE_USERNAME: postgres
-      DATABASE_PASSWORD: password
 volumes:
   pg-16-dev:
   web:
