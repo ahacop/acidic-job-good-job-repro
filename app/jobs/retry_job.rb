@@ -1,4 +1,6 @@
 class RetryJob < ApplicationJob
+  include AcidicJob::Mixin
+
   def perform
     if Rails.cache.read("job_has_run")
       Rails.logger.info "Job executed successfully."
