@@ -5,5 +5,9 @@ services:
       - 5432:5432
     volumes:
       - pg-16-dev:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: good_job_repro_development
 volumes:
   pg-16-dev:
