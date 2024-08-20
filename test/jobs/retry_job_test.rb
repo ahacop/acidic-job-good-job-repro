@@ -5,33 +5,35 @@ class RetryJobTest < ActiveSupport::TestCase
     Rails.cache.clear
   end
 
-  test "job can be retried after failure" do
-    # Enqueue the job that will raise an error
-    job = RetryJob.perform_later
+  test "job with AcidicJob mixed in raises on retry with GoodJob" do
+    not_working_job = RetryNotWorkingJob.perform_later
+    working_job = RetryWorkingJob.perform_later
 
-    # Simulate job failure by calling GoodJob's ability to execute jobs
     assert_raises(StandardError) do
       GoodJob.perform_inline
     end
 
-    # Find the GoodJob::Job associated with the ActiveJob
-    good_job = GoodJob::Job.find_by(active_job_id: job.job_id)
-    assert_not_nil good_job
-
-    # Assert that the initial execution has failed
-    initial_execution = GoodJob::Execution.find_by(active_job_id: job.job_id)
-    assert_not_nil initial_execution
-    assert_not_nil initial_execution.error
-
-    # Retry the failed job
-    assert_difference -> { GoodJob::Execution.count }, 1 do
-      good_job.retry_job
+    assert_raises(StandardError) do
       GoodJob.perform_inline
     end
 
-    # Verify that a new execution was created and that it succeeded
-    retried_execution = GoodJob::Execution.where(active_job_id: job.job_id).order(created_at: :desc).first
-    assert_not_equal initial_execution.id, retried_execution.id
-    assert_nil retried_execution.error
+    not_working_gj = GoodJob::Job.find_by(active_job_id: not_working_job.job_id)
+    assert_not_nil not_working_gj
+    assert_equal 1, not_working_gj.executions.count
+    assert_not_nil not_working_gj.executions.first.error
+
+    working_gj = GoodJob::Job.find_by(active_job_id: working_job.job_id)
+    assert_not_nil working_gj
+    assert_equal 1, working_gj.executions.count
+    assert_not_nil working_gj.executions.first.error
+
+    assert_difference -> { working_gj.executions.count }, 1 do
+      working_gj.retry_job
+      GoodJob.perform_inline
+    end
+
+    assert_raises(NoMethodError, "undefined method `utc' for an instance of Float") do
+      not_working_gj.retry_job
+    end
   end
 end

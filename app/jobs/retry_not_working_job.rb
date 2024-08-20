@@ -1,4 +1,4 @@
-class RetryJob < ApplicationJob
+class RetryNotWorkingJob < ApplicationJob
   include AcidicJob::Mixin
 
   def perform
