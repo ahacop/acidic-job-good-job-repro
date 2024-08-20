@@ -35,7 +35,7 @@ migrate:
 
 # Run tests inside the container
 test:
-	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) run $(SERVICE) ./bin/rails test
+	$(DOCKER_COMPOSE) run -e BACKTRACE=1 $(SERVICE) ./bin/rails test
 
 # Install new gems after modifying the Gemfile
 bundle-install:
