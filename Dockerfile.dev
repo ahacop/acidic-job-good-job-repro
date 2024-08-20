@@ -1,0 +1,12 @@
+FROM ruby:3.3.4
+
+RUN apt-get update -qq && apt-get install -y nodejs postgresql-client
+
+WORKDIR /good_job_repro
+
+COPY Gemfile /good_job_repro/Gemfile
+COPY Gemfile.lock /good_job_repro/Gemfile.lock
+
+RUN bundle install
+
+COPY . /good_job_repro

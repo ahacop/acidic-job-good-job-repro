@@ -20,8 +20,7 @@ default: &default
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   username: postgres
   password: password
-  host: postgres
-  port: 5432
+  host: good_job_repro_db
 development:
   !!merge <<: *default
   database: good_job_repro_development
