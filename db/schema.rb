@@ -10,9 +10,28 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_08_20_152404) do
+ActiveRecord::Schema[7.2].define(version: 2024_08_20_162500) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "acidic_job_runs", force: :cascade do |t|
+    t.boolean "staged", default: false, null: false
+    t.string "idempotency_key", null: false
+    t.text "serialized_job", null: false
+    t.string "job_class", null: false
+    t.datetime "last_run_at", default: -> { "CURRENT_TIMESTAMP" }
+    t.datetime "locked_at"
+    t.string "recovery_point"
+    t.text "error_object"
+    t.text "attr_accessors"
+    t.text "workflow"
+    t.bigint "awaited_by_id"
+    t.text "returning_to"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["awaited_by_id"], name: "index_acidic_job_runs_on_awaited_by_id"
+    t.index ["idempotency_key"], name: "index_acidic_job_runs_on_idempotency_key", unique: true
+  end
 
   create_table "good_job_batches", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", null: false

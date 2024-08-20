@@ -1,6 +1,10 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    acidic_job (0.9.0)
+      activejob
+      activerecord
+      activesupport
     actioncable (7.2.0)
       actionpack (= 7.2.0)
       activesupport (= 7.2.0)
@@ -305,6 +309,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  acidic_job
   bootsnap
   brakeman
   capybara
